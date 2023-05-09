@@ -53,6 +53,3 @@ class UserPersistenceSqlite(UserPersistenceInterface):
         self.cursor.execute(f"DELETE FROM users WHERE id = '{uid}'")
         self.conn.commit()
 
-    def update(self, user_id: str, new_username: str):
-        self.cursor.execute(f"UPDATE users SET username = '{new_username}' WHERE id = '{user_id}'")
-        self.conn.commit()

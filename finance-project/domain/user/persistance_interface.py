@@ -16,8 +16,5 @@ class UserPersistenceInterface(abc.ABC):
     def delete(self, uid: str):
         pass
 
-    @abc.abstractmethod
-    def update(self, user_id: str, new_username: str):
-        pass
 
 

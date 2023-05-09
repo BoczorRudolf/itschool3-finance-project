@@ -63,10 +63,3 @@ class UserPersistenceFile(UserPersistenceInterface):
             raise NonExistentUserId(f"No user found with ID '{uid}'")
         self.write_file(updated_users_list)
 
-    def update(self, user_id: str, new_username: str):
-        current_users = self.read_file()
-        for user in current_users:
-            if user.id == uuid.UUID(hex=user_id):
-                user.username = new_username
-                break
-        self.write_file(current_users)
