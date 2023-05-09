@@ -41,3 +41,4 @@ class AssetRepo:
             sector="sec"
         ) for x in assets_info]
         return assets
+
