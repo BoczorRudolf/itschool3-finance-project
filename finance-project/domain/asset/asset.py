@@ -1,6 +1,5 @@
 import yfinance
 
-
 class Asset:
     def __init__(self, ticker: str, nr: float, name: str, country: str, sector: str):
         self.__ticker = ticker
@@ -29,10 +28,9 @@ class Asset:
 
     @property
     def current_price(self) -> float:
-        # TODO extract the call self.__yfin.fast_info to not have duplicate code
-        # Recommended, extract to a variable attached to the object
-        price = self.__info["lastPrice"]
-        return round(price, 2)
+       price = self.__info["lastPrice"]
+       return round(price, 2)
+
 
     @property
     def currency(self) -> str:
@@ -42,9 +40,7 @@ class Asset:
     def closed_price(self) -> float:
         return self.__info["previousClose"]
 
+
     @property
     def fifty_day_price(self) -> float:
         return self.__info["fiftyDayAverage"]
-
-    # TODO a property, in percentage how much it went up or down
-    # current_price & closed_price

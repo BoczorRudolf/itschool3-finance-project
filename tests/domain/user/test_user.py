@@ -3,7 +3,7 @@ import unittest
 from domain.user.user import User
 
 
-class UserMyTestCase(unittest.TestCase):
+class UserMyTasteCase(unittest.TestCase):
     def test_user_sets_the_right_username(self):
         # set up
         username = "random_generated"
@@ -20,9 +20,8 @@ class UserMyTestCase(unittest.TestCase):
 
         self.assertEqual([], actual_stocks)
 
-    @unittest.skip("TODO: homework")
+    @unittest.skip
     def test_it_sets_the_stocks_we_give(self):
-        # set a list of 3 strings
         pass
 
 

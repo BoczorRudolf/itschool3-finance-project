@@ -13,6 +13,7 @@ class User:
     def id(self) -> UUID:
         return self.__id
 
+
     @property
     def username(self) -> str:
         return self.__username
