@@ -39,3 +39,12 @@ def add_asset_to_user(user_id: str,  asset: AssetAdd, repo=Depends(get_user_repo
     user.add_stock(new_asset)
     AssetRepo().add_to_user(user, new_asset)
     return new_asset
+
+@users_router.put("/{user_id}", response_model=UserInfo)
+def update_user(user_id: str, username: str, repo=Depends(get_user_repo)):
+    repo.update(user_id, username)
+    return repo.get_by_id(user_id)
+
+@users_router.delete("/{user_id}")
+def delete_user(user_id: str, repo=Depends(get_user_repo)):
+    repo.delete(user_id)
