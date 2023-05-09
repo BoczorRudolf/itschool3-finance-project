@@ -24,3 +24,4 @@ class User:
 
     def add_stock(self, stock: Asset):
         self.__stocks.append(stock)
+

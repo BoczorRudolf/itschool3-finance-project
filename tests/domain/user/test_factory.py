@@ -1,43 +1,74 @@
 import unittest
+from uuid import UUID
 
 from domain.user.factory import UserFactory, InvalidUsername
 from domain.user.user import User
 
 
-# TODO update tests
-class UserFactoryTestCase(unittest.TestCase):
-    def test_it_creates_a_user_if_the_username_is_between_6_and_20_chars(self):
-        username = "between-6-and-20"
-        factory = UserFactory()
+class TestUserFactory(unittest.TestCase):
+    def setUp(self):
+        self.factory = UserFactory()
 
-        actual_user = factory.make_new(username)
+    def test_creates_user_with_valid_username_length(self):
+        username = "between-6-and-20"
+
+        actual_user = self.factory.make_new(username)
 
         self.assertEqual(username, actual_user.username)
-        self.assertEqual(User, type(actual_user))
+        self.assertIsInstance(actual_user, User)
 
-    def test_it_raises_exception_if_the_username_is_below_6_chars(self):
+    def test_raises_exception_if_username_is_below_minimum_length(self):
         username = "below"
-        factory = UserFactory()
 
         with self.assertRaises(InvalidUsername) as context:
-            factory.make_new(username)
+            self.factory.make_new(username)
 
         self.assertEqual(
-            "Username should have at least 6 characters", str(context.exception)
+            "Username should have at least 6 characters",
+            str(context.exception)
         )
 
-    @unittest.skip("TODO")
-    def test_it_raises_exception_if_the_username_is_above_20_chars(self):
-        pass
+    def test_raises_exception_if_username_is_above_maximum_length(self):
+        username = "a" * 21
 
-    @unittest.skip("TODO")
-    def test_it_creates_a_user_if_the_username_has_valid_chars(self):
-        pass
+        with self.assertRaises(InvalidUsername) as context:
+            self.factory.make_new(username)
 
-    @unittest.skip("TODO")
-    def test_it_raises_exception_if_the_username_has_invalid_chars(self):
-        pass
+        self.assertEqual(
+            "Username should have a maximum of 20 characters",
+            str(context.exception)
+        )
+
+    def test_creates_user_with_valid_username_characters(self):
+        username = "piu-bum623"
+
+        actual_user = self.factory.make_new(username)
+
+        self.assertEqual(username, actual_user.username)
+
+    def test_raises_exception_if_username_contains_invalid_characters(self):
+        username = "$#%@!m@1"
+
+        with self.assertRaises(InvalidUsername) as context:
+            self.factory.make_new(username)
+
+        self.assertEqual(
+            "Username should contain only alpha-numeric characters or '-'.",
+            str(context.exception)
+        )
+
+    def test_make_user_from_persistence_info(self):
+        uuid_str = "425181e7-82d7-4436-ac21-91c76b9a2157"
+        username = "random-1"
+        info = (uuid_str, username)
+
+        user = self.factory.make_from_persistance(info)
+
+        self.assertIsInstance(user, User)
+        self.assertEqual(user.id, UUID(hex=uuid_str))
+        self.assertEqual(user.username, username)
 
 
 if __name__ == "__main__":
     unittest.main()
+
