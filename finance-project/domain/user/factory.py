@@ -26,7 +26,7 @@ class UserFactory:
         return User(user_uuid, username)
 
 
-    def make_from_persistance(self, info: tuple) -> User:
+    def make_from_persistence(self, info: tuple) -> User:
         return User(
             uuid=uuid.UUID(info[0]),
             username=info[1],

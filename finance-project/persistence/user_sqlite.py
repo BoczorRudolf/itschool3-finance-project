@@ -2,7 +2,8 @@ import sqlite3
 from domain.user.persistance_interface import UserPersistenceInterface
 from domain.user.user import User
 from domain.user.factory import UserFactory
-from persistence.user_file import NonExistentUserId
+from persistence.exceptions import NonExistentUserId
+
 
 
 class UserPersistenceSqlite(UserPersistenceInterface):
@@ -20,7 +21,7 @@ class UserPersistenceSqlite(UserPersistenceInterface):
             else:
                 raise e
         users_info = self.cursor.fetchall()
-        users = [self.factory.make_from_persistance(x) for x in users_info]
+        users = [self.factory.make_from_persistence(x) for x in users_info]
         return users
 
     def add(self, user: User):
@@ -41,7 +42,7 @@ class UserPersistenceSqlite(UserPersistenceInterface):
         if not user_info:
             raise NonExistentUserId(f"No user found with ID '{uid}'")
 
-        user = self.factory.make_from_persistance(user_info)
+        user = self.factory.make_from_persistence(user_info)
 
         return user
 
