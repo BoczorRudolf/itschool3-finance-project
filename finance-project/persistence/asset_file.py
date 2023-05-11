@@ -1,4 +1,5 @@
 import json
+import logging
 from typing import List
 
 
@@ -9,7 +10,7 @@ from domain.exceptions import DuplicateAsset
 from domain.user.user import User
 
 
-
+logger = logging.getLogger(__name__)
 
 
 class AssetPersistenceFile(AssetPersistenceInterface):
@@ -34,6 +35,7 @@ class AssetPersistenceFile(AssetPersistenceInterface):
         data[str(user.id)] = user_assets
         with open(self.__filename, "w") as f:
             json.dump(data, f, indent=4)
+        logger.info(f"Asset {asset.ticker} added to user {user.id}")
 
     def delete_for_user(self, user_id: str, asset_ticker: str) -> None:
         data = self.__load_json()
@@ -44,6 +46,7 @@ class AssetPersistenceFile(AssetPersistenceInterface):
                     break
         with open(self.__filename, "w") as f:
             json.dump(data, f, indent=4)
+        logger.info(f"Asset {asset_ticker} deleted for user {user_id}")
 
     def get_for_user(self, user: User) -> List[Asset]:
         data = self.__load_json()
@@ -58,11 +61,16 @@ class AssetPersistenceFile(AssetPersistenceInterface):
                 sector=asset_dict["sector"],
             )
             assets.append(asset)
+        logger.info(f"Assets retrieved for user {user.id}")
         return assets
 
     def __load_json(self) -> dict[str, list[dict[str, any]]]:
         try:
             with open(self.__filename) as f:
                 return json.load(f)
-        except FileNotFoundError:
+        except FileNotFoundError as e:
+            logging.warning(
+                "Could not read file because it not exists, will return empty dict, reason: "
+                + str(e)
+            )
             return {}

@@ -101,4 +101,4 @@ def delete_user(user_id: str, repo=Depends(get_user_repo)):
         return {"message": "User not found"}
     except Exception as e:
         logging.error(f"Error deleting user {user_id}: {str(e)}")
-        return {"message": "Error deleting user"}
+        return {"message": "User not found"}
