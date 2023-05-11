@@ -51,4 +51,6 @@ class Asset:
             return f"The closed {self.closed_price} is {abs(percentage_difference):.2f}% lower than current {self.current_price}"
         return "The values are the same"
 
-
+    @property
+    def avg_today_price(self) -> float:
+        return (self.today_high_price + self.today_low_price) / 2
