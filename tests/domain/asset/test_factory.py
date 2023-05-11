@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock
 
 from domain.asset.asset import Asset
 from domain.asset.factory import AssetFactory
-from persistence.exceptions import InvalidTicker
+from domain.exceptions import InvalidTicker
 
 
 class TestAssetFactory(unittest.TestCase):
