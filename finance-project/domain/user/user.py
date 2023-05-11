@@ -28,3 +28,6 @@ class User:
 
     def add_stock(self, asset: Asset):
         self.__stocks.append(asset)
+
+    def remove_stock(self, stock: Asset):
+        self.__stocks.remove(stock)

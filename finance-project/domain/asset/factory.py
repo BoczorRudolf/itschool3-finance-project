@@ -1,6 +1,6 @@
 import yahooquery
 from domain.asset.asset import Asset
-from persistence.exceptions import InvalidTicker
+from domain.exceptions import InvalidTicker
 
 
 class AssetFactory:

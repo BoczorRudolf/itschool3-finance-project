@@ -1,74 +1,66 @@
 import unittest
-from uuid import UUID
-
-from domain.user.factory import UserFactory, InvalidUsername
+import uuid
+from domain.user.factory import UserFactory, InvalidUsername, InvalidPersistenceInfo
 from domain.user.user import User
 
 
-class TestUserFactory(unittest.TestCase):
+class UserFactoryTestCase(unittest.TestCase):
     def setUp(self):
         self.factory = UserFactory()
 
-    def test_creates_user_with_valid_username_length(self):
+    def test_creates_user_with_valid_username(self):
         username = "between-6-and-20"
-
         actual_user = self.factory.make_new(username)
-
         self.assertEqual(username, actual_user.username)
         self.assertIsInstance(actual_user, User)
 
-    def test_raises_exception_if_username_is_below_minimum_length(self):
+    def test_raises_exception_if_username_is_below_6_chars(self):
         username = "below"
-
         with self.assertRaises(InvalidUsername) as context:
             self.factory.make_new(username)
-
         self.assertEqual(
-            "Username should have at least 6 characters",
-            str(context.exception)
+            "Username should have more than 6 characters", str(context.exception)
         )
 
-    def test_raises_exception_if_username_is_above_maximum_length(self):
-        username = "a" * 21
-
+    def test_raises_exception_if_username_is_above_20_chars(self):
+        username = "aaaaaaaaaadddddddddddddwwwwwwwwww"
         with self.assertRaises(InvalidUsername) as context:
             self.factory.make_new(username)
-
         self.assertEqual(
-            "Username should have a maximum of 20 characters",
-            str(context.exception)
+            "The username should have a maximum of 20 characters", str(context.exception)
         )
 
-    def test_creates_user_with_valid_username_characters(self):
-        username = "piu-bum623"
-
+    def test_creates_user_with_valid_chars_in_username(self):
+        username = "Marduk-666"
         actual_user = self.factory.make_new(username)
-
         self.assertEqual(username, actual_user.username)
 
-    def test_raises_exception_if_username_contains_invalid_characters(self):
-        username = "$#%@!m@1"
-
+    def test_raises_exception_if_username_has_invalid_chars(self):
+        username = "Marduk*77"
         with self.assertRaises(InvalidUsername) as context:
             self.factory.make_new(username)
-
         self.assertEqual(
-            "Username should contain only alpha-numeric characters or '-'.",
-            str(context.exception)
+            "The username must consist solely of alphanumeric characters or the hyphen (-) symbol.",
+            str(context.exception),
         )
 
-    def test_make_user_from_persistence_info(self):
-        uuid_str = "425181e7-82d7-4436-ac21-91c76b9a2157"
-        username = "random-1"
-        info = (uuid_str, username)
+    def test_make_from_persistence_with_valid_info(self):
+        valid_uuid = str(uuid.uuid4())
+        valid_username = "mayhem_all"
+        valid_info = (valid_uuid, valid_username)
+        result = self.factory.make_from_persistence(valid_info)
+        self.assertIsInstance(result, User)
+        self.assertEqual(str(result.id), valid_uuid)
+        self.assertEqual(result.username, valid_username)
 
-        user = self.factory.make_from_persistance(info)
-
-        self.assertIsInstance(user, User)
-        self.assertEqual(user.id, UUID(hex=uuid_str))
-        self.assertEqual(user.username, username)
+    def test_make_from_persistence_with_invalid_info(self):
+        invalid_uuid = "invalid-uuid"
+        invalid_username = "user%name"
+        invalid_info = (invalid_uuid, invalid_username)
+        with self.assertRaises(InvalidPersistenceInfo) as context:
+            self.factory.make_from_persistence(invalid_info)
+        self.assertEqual(str(context.exception), "Invalid UUID: {}".format(invalid_uuid))
 
 
 if __name__ == "__main__":
     unittest.main()
-

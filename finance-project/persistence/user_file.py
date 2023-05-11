@@ -4,14 +4,17 @@ import uuid
 import os
 
 from domain.asset.repo import AssetRepo
+from domain.exceptions import FileError
 from domain.user.factory import UserFactory
 from domain.user.persistance_interface import UserPersistenceInterface
 
 from domain.user.user import User
 
-
-class FileError(Exception):
-    pass
+logging.basicConfig(
+    filename="finance.log",
+    level=logging.DEBUG,
+    format="%(asctime)s _ %(levelname)s _ %(name)s _ %(message)s",
+)
 
 
 class UserPersistenceFile(UserPersistenceInterface):

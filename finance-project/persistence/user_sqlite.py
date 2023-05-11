@@ -1,59 +1,71 @@
+import logging
 import sqlite3
+
+from domain.user.factory import UserFactory
 from domain.user.persistance_interface import UserPersistenceInterface
 from domain.user.user import User
-from domain.user.factory import UserFactory
-from persistence.exceptions import NonExistentUserId
-
 
 
 class UserPersistenceSqlite(UserPersistenceInterface):
-    def __init__(self):
-        self.conn = sqlite3.connect("main_users.db")
-        self.cursor = self.conn.cursor()
-        self.factory = UserFactory()
-
     def get_all(self) -> list[User]:
-        try:
-            self.cursor.execute("SELECT * FROM users")
-        except sqlite3.OperationalError as e:
-            if "no such table" in str(e):
-                return []
-            else:
-                raise e
-        users_info = self.cursor.fetchall()
-        users = [self.factory.make_from_persistence(x) for x in users_info]
+        with sqlite3.connect("main_users.db") as conn:
+            cursor = conn.cursor()
+            try:
+                cursor.execute("SELECT * FROM users")
+            except sqlite3.OperationalError as e:
+                if 'no such table' in str(e):
+                    return []
+                else:
+                    raise e
+            users_info = cursor.fetchall()
+        factory = UserFactory()
+        users = [factory.make_from_persistence(x) for x in users_info]
         return users
 
     def add(self, user: User):
-        try:
-            self.cursor.execute(f"INSERT INTO users (id, username) VALUES ('{user.id}','{user.username}')")
-        except sqlite3.OperationalError as e:
-            if "no such table" in str(e):
-                self.cursor.execute("CREATE TABLE users (id TEXT PRIMARY KEY, username TEXT NOT NULL)")
+        with sqlite3.connect("main_users.db") as conn:
+            cursor = conn.cursor()
+            try:
+                cursor.execute(f"INSERT INTO users (id, username) VALUES ('{user.id}','{user.username}')")
+            except sqlite3.OperationalError as e:
+                if "no such table" in str(e):
+                    logging.warning(f"Table users does not exist in database. Creating it...")
+                    cursor.execute("CREATE TABLE users (id TEXT PRIMARY KEY, username TEXT NOT NULL)")
+                    logging.info("Table users created in database.")
+                else:
+                    logging.error(f"Error adding user with id {user.id}: {e}")
+                    raise e
             else:
+                logging.info(f"User with id {user.id} and username {user.username} added to database.")
+                conn.commit()
+
+    def update(self, user_id: User.id, username: str):
+        with sqlite3.connect("main_users.db") as conn:
+            cursor = conn.cursor()
+            try:
+                logging.info(f"Updating user with id {user_id} with new username: {username}")
+                cursor.execute(f"UPDATE users SET (username)='{username}' WHERE id='{user_id}'")
+            except sqlite3.OperationalError as e:
+                logging.error(f"Error updating user with id {user_id}: {e}")
                 raise e
-            self.cursor.execute(f"INSERT INTO users (id, username) VALUES ('{user.id}','{user.username}')")
-        self.conn.commit()
+            else:
+                conn.commit()
+                logging.info(f"User with id {user_id} successfully updated with new username: {username}")
 
-    def get_by_id(self, uid: str) -> User:
-        self.cursor.execute(f"SELECT * FROM users WHERE id='{uid}'")
-
-        user_info = self.cursor.fetchone()
-        if not user_info:
-            raise NonExistentUserId(f"No user found with ID '{uid}'")
-
-        user = self.factory.make_from_persistence(user_info)
-
-        return user
-
-    def delete(self, uid: str):
-        self.cursor.execute(f"SELECT id FROM users WHERE id='{uid}'")
-        result = self.cursor.fetchone()
-        if result is None:
-            raise NonExistentUserId(f"No user found with ID '{uid}'")
-        self.cursor.execute(f"DELETE FROM users WHERE id = '{uid}'")
-        self.conn.commit()
-
-    def update(self, user_id: str, new_username: str):
-        self.cursor.execute(f"UPDATE users SET username = '{new_username}' WHERE id = '{user_id}'")
-        self.conn.commit()
+    def delete(self, user_id: User.id):
+        with sqlite3.connect("main_users.db") as conn:
+            cursor = conn.cursor()
+            try:
+                cursor.execute(f"SELECT * FROM users WHERE id='{user_id}'")
+                user_info = cursor.fetchone()
+                if user_info is None:
+                    logging.warning(f"User with id {user_id} not found in database")
+                    return 404
+                else:
+                    cursor.execute(f"DELETE FROM users WHERE id='{user_id}'")
+            except sqlite3.OperationalError as e:
+                logging.error(f"Error deleting user with id {user_id}: {e}")
+                raise e
+            else:
+                conn.commit()
+                logging.info(f"User with id {user_id} successfully deleted from database")
