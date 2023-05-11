@@ -1,31 +1,39 @@
 import logging
 import uuid
 
-from domain.exceptions import InvalidPersistenceInfo
+from domain.exceptions import InvalidPersistenceInfo, InvalidUsername
 from domain.user.user import User
 
-class InvalidUsername(Exception):
-    pass
+
+
+
 
 
 
 class UserFactory:
     def make_new(self, username: str) -> User:
+        logging.info("UserFactory making new user with username: %s", username)
         if len(username) > 20:
+            logging.error("InvalidUsername: The username field should be limited to a maximum of 20 characters.")
             raise InvalidUsername(
                 "The username field should be limited to a maximum of 20 characters."
             )
         if len(username) < 6:
+            logging.error("InvalidUsername: The username must be a minimum of 6 characters in length.")
             raise InvalidUsername(
                 "The username must be a minimum of 6 characters in length. "
             )
         for char in username:
             if not (char.isalnum() or char == "-"):
+                logging.error("InvalidUsername: The username must consist solely of alphanumeric characters or the hyphen (-) symbol.")
                 raise InvalidUsername(
                     "The username must consist solely of alphanumeric characters or the hyphen (-) symbol."
                 )
         user_uuid = uuid.uuid4()
-        return User(user_uuid, username)
+        new_user = User(user_uuid, username)
+        logging.info("UserFactory successfully created new user with id: %s", str(user_uuid))
+        return new_user
+
 
 
     def make_from_persistence(self, info: tuple) -> User:
