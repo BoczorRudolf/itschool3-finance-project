@@ -1,5 +1,7 @@
 import unittest
 import uuid
+
+from domain.asset.asset import Asset
 from domain.user.user import User
 
 
@@ -33,6 +35,15 @@ class UserMyTasteCase(unittest.TestCase):
         actual = user.stocks
 
         self.assertEqual(stock_list, actual)
+
+    def test_it_sets_the_id(self):
+        id_ = uuid.uuid4()
+        user1 = User(id_, "random-user")
+
+        actual_id_user1 = user1.id
+
+        self.assertEqual(actual_id_user1, id_)
+
 
 
 if __name__ == "__main__":

@@ -45,6 +45,16 @@ class UserFactoryTestCase(unittest.TestCase):
             str(context.exception),
         )
 
+    def test_it_raises_exception_if_the_username_has_valid_chars(self):
+        username = "user_name"
+        with self.assertRaises(InvalidUsername) as context:
+            self.factory.make_new(username)
+        self.assertEqual(
+            "The username must consist solely of alphanumeric characters or the hyphen (-) symbol.",
+            str(context.exception)
+        )
+
+
     def test_make_from_persistence_with_valid_info(self):
         valid_uuid = str(uuid.uuid4())
         valid_username = "mayhem_all"
@@ -61,6 +71,8 @@ class UserFactoryTestCase(unittest.TestCase):
         with self.assertRaises(InvalidPersistenceInfo) as context:
             self.factory.make_from_persistence(invalid_info)
         self.assertEqual(str(context.exception), "Invalid UUID: {}".format(invalid_uuid))
+
+
 
 
 if __name__ == "__main__":
