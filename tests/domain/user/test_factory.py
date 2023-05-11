@@ -19,7 +19,8 @@ class UserFactoryTestCase(unittest.TestCase):
         with self.assertRaises(InvalidUsername) as context:
             self.factory.make_new(username)
         self.assertEqual(
-            "Username should have more than 6 characters", str(context.exception)
+            "The username must be a minimum of 6 characters in length.",
+            str(context.exception).strip()
         )
 
     def test_raises_exception_if_username_is_above_20_chars(self):
@@ -27,7 +28,7 @@ class UserFactoryTestCase(unittest.TestCase):
         with self.assertRaises(InvalidUsername) as context:
             self.factory.make_new(username)
         self.assertEqual(
-            "The username should have a maximum of 20 characters", str(context.exception)
+            "The username field should be limited to a maximum of 20 characters.", str(context.exception)
         )
 
     def test_creates_user_with_valid_chars_in_username(self):
