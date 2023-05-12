@@ -28,13 +28,16 @@ class UserMyTasteCase(unittest.TestCase):
     def test_it_sets_the_stocks_we_give(self):
         id_ = uuid.uuid4()
         username = "random-name"
-        stock_list = ["first", "second", "third"]
 
-        user = User(id_, username, stock_list)
+        actual_asset = [
+            Asset(country="United States", ticker="tsla", nr=0, name="Tesla", sector="Tech")
+        ]
+
+        user = User(id_, username, actual_asset)
 
         actual = user.stocks
 
-        self.assertEqual(stock_list, actual)
+        self.assertEqual(actual_asset, actual)
 
     def test_it_sets_the_id(self):
         id_ = uuid.uuid4()

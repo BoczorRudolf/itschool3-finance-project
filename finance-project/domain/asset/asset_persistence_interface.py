@@ -1,29 +1,26 @@
-import abc
-
+from abc import abstractmethod, ABC
 
 from domain.asset.asset import Asset
-from domain.user.persistance_interface import UserPersistenceInterface
 from domain.user.user import User
 
 
-class AssetPersistenceInterface(UserPersistenceInterface):
-    def add_to_user(self, user: User, asset: Asset):
+class AssetPersistenceInterface(ABC):
+
+
+    @abstractmethod
+    def get_all(self, new_user: User) -> list[Asset]:
         pass
 
-    def get_for_user(self, user: User) -> list[Asset]:
+
+
+    @abstractmethod
+    def add(self, user, units):
         pass
 
-    def delete_for_user(self, user: User, asset: Asset):
+    @abstractmethod
+    def get_for_user(self, u):
         pass
 
-    def add(self, user: User):
-        pass
-
-    def delete(self, user_id: str):
-        pass
-
-    def update(self, user_id: str, username: str):
-        pass
-
-    def get_all_users(self) -> list[User]:
+    @abstractmethod
+    def add_to_user(self, user, asset):
         pass

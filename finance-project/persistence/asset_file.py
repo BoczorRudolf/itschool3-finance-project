@@ -2,75 +2,40 @@ import json
 import logging
 from typing import List
 
-
 from domain.asset.asset import Asset
 from domain.asset.asset_persistence_interface import AssetPersistenceInterface
-from domain.exceptions import DuplicateAsset
-
+from domain.asset.factory import AssetFactory
 from domain.user.user import User
 
 
-logger = logging.getLogger(__name__)
+class AssetFilePersistence(AssetPersistenceInterface):
+    def __init__(self, file_path: str):
+        self.file_path = file_path
 
-
-class AssetPersistenceFile(AssetPersistenceInterface):
-    def __init__(self, filename: str):
-        self.__filename = filename
-
-    def add_to_user(self, user: User, asset: Asset) -> None:
-        data = self.__load_json()
-        user_assets = data.get(str(user.id), [])
-        for every_dict in user_assets:
-            if every_dict["ticker"] == asset.ticker:
-                raise DuplicateAsset(f"Asset {asset.ticker} already added")
-        user_assets.append(
-            {
-                "ticker": asset.ticker,
-                "name": asset.name,
-                "country": asset.country,
-                "nr": asset.units,
-                "sector": asset.sector,
-            }
-        )
-        data[str(user.id)] = user_assets
-        with open(self.__filename, "w") as f:
-            json.dump(data, f, indent=4)
-        logger.info(f"Asset {asset.ticker} added to user {user.id}")
-
-    def delete_for_user(self, user_id: str, asset_ticker: str) -> None:
-        data = self.__load_json()
-        if user_id in data:
-            for d in data[user_id]:
-                if d["ticker"] == asset_ticker:
-                    data[user_id].remove(d)
-                    break
-        with open(self.__filename, "w") as f:
-            json.dump(data, f, indent=4)
-        logger.info(f"Asset {asset_ticker} deleted for user {user_id}")
-
-    def get_for_user(self, user: User) -> List[Asset]:
-        data = self.__load_json()
-        user_assets = data.get(str(user.id), [])
-        assets = []
-        for asset_dict in user_assets:
-            asset = Asset(
-                ticker=asset_dict["ticker"],
-                name=asset_dict["name"],
-                country=asset_dict["country"],
-                nr=asset_dict["nr"],
-                sector=asset_dict["sector"],
-            )
-            assets.append(asset)
-        logger.info(f"Assets retrieved for user {user.id}")
-        return assets
-
-    def __load_json(self) -> dict[str, list[dict[str, any]]]:
+    def get_all(self, new_user: User) -> List[Asset]:
         try:
-            with open(self.__filename) as f:
-                return json.load(f)
-        except FileNotFoundError as e:
-            logging.warning(
-                "Could not read file because it not exists, will return empty dict, reason: "
-                + str(e)
-            )
-            return {}
+            with open(self.file_path, "r") as f:
+                assets_info = json.load(f)
+            factory = AssetFactory()
+            return [factory.make_from_persistence(x) for x in assets_info]
+        except Exception as e:
+            logging.warning("We couldn't read the file, reason: " + str(e))
+            return []
+
+    def add(self, new_user: User, asset: Asset):
+        current_assets = self.get_all(new_user)
+        current_assets.append(asset)
+        assets_info = [(x.ticker, x.units, x.name,
+                        x.country, x.current_price, x.currency,
+                        x.closed_price, x.fifty_day_price,
+                        x.today_low_price, x.today_high_price,
+                        x.open_price, x.percentage_diff) for x in current_assets]
+        assets_json = json.dumps(assets_info)
+        with open(self.file_path, "w") as f:
+            f.write(assets_json)
+
+    def get_for_user(self, u):
+        pass
+
+    def add_to_user(self, user, asset):
+        pass

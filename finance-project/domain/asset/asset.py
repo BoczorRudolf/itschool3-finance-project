@@ -2,9 +2,10 @@ import yfinance
 
 
 class Asset:
-    def __init__(self, ticker: str, nr: float, name: str, country: str, sector: str):
-        self.ticker = ticker
-        self.units = nr
+    def __init__(self, ticker: str, nr: int, name: str, country: str, sector: str):
+        self.percentage_diff = None
+        self.__ticker = ticker
+        self.__nr = nr
         self.name = name
         self.country = country
         self.sector = sector
@@ -12,6 +13,14 @@ class Asset:
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.ticker!r})"
+
+    @property
+    def ticker(self) -> str:
+        return self.__ticker
+
+    @property
+    def units(self) -> float:
+        return self.__nr
 
     @property
     def current_price(self) -> float:
