@@ -16,9 +16,7 @@ logging.basicConfig(
 )
 
 
-
 class UserPersistenceFile(UserPersistenceInterface):
-
     def __init__(self, file_path: str):
         self.__file_path = file_path
 
@@ -43,7 +41,9 @@ class UserPersistenceFile(UserPersistenceInterface):
         try:
             with open(self.__file_path, "w") as f:
                 f.write(users_json)
-                logging.info(f"UserPersistenceFile add command successfully executed, added {user.username} to file")
+                logging.info(
+                    f"UserPersistenceFile add command successfully executed, added {user.username} to file"
+                )
         except FailToWriteToFile as e:
             logging.error("Could not write file. Error: " + str(e))
             raise e
@@ -57,10 +57,7 @@ class UserPersistenceFile(UserPersistenceInterface):
                 if u.id == uuid.UUID(hex=uid):
                     assets = asset_persistence.get_all(u)
 
-                    return User(uuid=u.id,
-                                username=u.username,
-                                stocks=assets
-                                )
+                    return User(uuid=u.id, username=u.username, stocks=assets)
             raise ValueError(f"No user with ID {uid} found.")
         except Exception as e:
             logging.error(f"Failed to get user with ID {uid}: {str(e)}")
@@ -75,7 +72,9 @@ class UserPersistenceFile(UserPersistenceInterface):
             with open(self.__file_path, "w") as f:
                 f.write(json_current_users)
         except ErrorWhenWritingInPersistence as e:
-            logging.warning(f"Could not write to file {self.__file_path}, reason: {str(e)}")
+            logging.warning(
+                f"Could not write to file {self.__file_path}, reason: {str(e)}"
+            )
             raise e
         logging.info(f"User with ID {uid} has been deleted.")
 
@@ -91,6 +90,6 @@ class UserPersistenceFile(UserPersistenceInterface):
                 f.write(users_json)
         except OSError as e:
             logging.warning(
-                f"Could not edit user with ID '{user_id}' in file '{self.__file_path}'. Reason: {str(e)}")
+                f"Could not edit user with ID '{user_id}' in file '{self.__file_path}'. Reason: {str(e)}"
+            )
             raise ErrorWhenWritingInPersistence(e)
-

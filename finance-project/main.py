@@ -3,7 +3,12 @@ from fastapi import FastAPI, Request
 from fastapi_utils.tasks import repeat_every
 from api.users import users_router
 from api.assets import assets_router
-from domain.exceptions import NonExistentUserId, InvalidTicker, DuplicateUser, DuplicateAsset
+from domain.exceptions import (
+    NonExistentUserId,
+    InvalidTicker,
+    DuplicateUser,
+    DuplicateAsset,
+)
 from domain.user.factory import InvalidUsername
 from starlette.responses import JSONResponse
 import subprocess
@@ -21,7 +26,7 @@ app = FastAPI(
     debug=True,
     title="Fintech Portfolio API",
     description="A webserver with a REST API for keeping track of your different financial assets,"
-    " stocks & crypto, and see/compare their evolution" ,
+    " stocks & crypto, and see/compare their evolution",
     version="1.0.0",
 )
 
@@ -59,7 +64,6 @@ def return_invalid_id(_: Request, e: NonExistentUserId):
 def return_invalid_ticker(_: Request, e: InvalidTicker):
     logging.error(str(e))
     return JSONResponse(status_code=404, content=str(e))
-
 
 
 @app.on_event("startup")

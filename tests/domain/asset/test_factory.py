@@ -5,7 +5,6 @@ from domain.asset.factory import AssetFactory
 
 
 class TestAssetFactory(unittest.TestCase):
-
     def setUp(self):
         self.factory = AssetFactory()
 
@@ -13,14 +12,16 @@ class TestAssetFactory(unittest.TestCase):
         chosen_ticker = "TSLA"
         profile_for_chosen_ticker = {
             "longBusinessSummary": "Tesla, Inc. is an American electric vehicle and clean energy company."
-                                   "The company designs, manufactures, and sells electric cars, solar energy "
-                                   "products, and more.",
+            "The company designs, manufactures, and sells electric cars, solar energy "
+            "products, and more.",
             "country": "United States",
-            "sector": "Consumer Cyclical"
+            "sector": "Consumer Cyclical",
         }
 
         mock_yahoo_ticker_instance = MagicMock()
-        mock_yahoo_ticker_instance.summary_profile = {chosen_ticker: profile_for_chosen_ticker}
+        mock_yahoo_ticker_instance.summary_profile = {
+            chosen_ticker: profile_for_chosen_ticker
+        }
         mock_yahoo_ticker = MagicMock(return_value=mock_yahoo_ticker_instance)
 
         with unittest.mock.patch("yahooquery.Ticker", mock_yahoo_ticker):
@@ -43,5 +44,5 @@ class TestAssetFactory(unittest.TestCase):
         self.assertEqual(asset.sector, info[4])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

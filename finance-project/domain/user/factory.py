@@ -4,8 +4,6 @@ import logging
 import uuid
 
 
-
-
 logger = logging.getLogger(__name__)
 
 
@@ -24,9 +22,6 @@ class UserFactory:
 
         user_uuid = uuid.uuid4()
         return User(user_uuid, username)
-
-
-
 
     @classmethod
     def make_from_persistence(cls, info: tuple) -> User:

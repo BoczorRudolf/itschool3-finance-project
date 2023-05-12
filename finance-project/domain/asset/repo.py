@@ -32,4 +32,3 @@ class AssetRepo:
     def __check_we_have_assets(self, user: User):
         if self.__assets is None:
             self.__assets = self.__persistence.get_all(user)
-

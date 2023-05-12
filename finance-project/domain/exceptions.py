@@ -53,6 +53,7 @@ class InvalidPersistence(Exception):
 class InvalidUserIdFormat(Exception):
     pass
 
+
 class EntityNotFoundException(BaseException):
     def __init__(self, message: str) -> None:
         self.message = message

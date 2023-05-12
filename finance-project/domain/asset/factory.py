@@ -4,7 +4,6 @@ from domain.exceptions import InvalidTicker
 
 
 class AssetFactory:
-
     @staticmethod
     def make_new(ticker: str, quantity: int = 0) -> Asset:
         try:

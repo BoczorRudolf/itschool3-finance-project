@@ -62,26 +62,20 @@ class AssetPersistenceSqlite(AssetPersistenceInterface):
                 else:
                     raise e
             assets_info = cursor.fetchall()
-        assets = [Asset(
-            ticker=x[0],
-            nr=x[3],
-            name=x[1],
-            country=x[2],
-            sector="sec"
-        ) for x in assets_info]
+        assets = [
+            Asset(ticker=x[0], nr=x[3], name=x[1], country=x[2], sector="sec")
+            for x in assets_info
+        ]
         return assets
-
 
     def delete_for_user(self, user_id, asset):
         pass
-
 
     def get_for_user(self, u):
         pass
 
     def append(self, asset):
         pass
-
 
     def add(self, user, units):
         pass

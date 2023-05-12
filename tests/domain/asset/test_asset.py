@@ -25,7 +25,7 @@ class AssetTestCase(unittest.TestCase):
         self.assertEqual(self.__asset.sector, "Technology")
 
     def test_units(self):
-        asset = Asset('tsla', 15, 'Tesla', 'US', 'Technology')
+        asset = Asset("tsla", 15, "Tesla", "US", "Technology")
         self.assertEqual(asset.units, 15)
 
     @patch("yfinance.Ticker")
@@ -42,11 +42,11 @@ class AssetTestCase(unittest.TestCase):
         asset = Asset("AAPL", 10, "Apple Inc.", "US", "Technology")
         self.assertEqual(asset.currency, expected)
 
-    @patch('yfinance.Ticker')
+    @patch("yfinance.Ticker")
     def test_closed_price(self, mock_yfinance):
         expected = 161.99
-        mock_yfinance.return_value.fast_info = {'previousClose': expected}
-        asset = Asset('tsla', 15, 'Tesla', 'US', 'Technology')
+        mock_yfinance.return_value.fast_info = {"previousClose": expected}
+        asset = Asset("tsla", 15, "Tesla", "US", "Technology")
         self.assertEqual(asset.closed_price, expected)
 
     @patch("yfinance.Ticker")
@@ -83,7 +83,6 @@ class AssetTestCase(unittest.TestCase):
         mock_yfinance.return_value.fast_info = {"fiftyDayAverage": expected}
         asset = Asset("goog", 1, "Google", "US", "Tech")
         self.assertEqual(asset.fifty_day_price, expected)
-
 
 
 if __name__ == "__main__":

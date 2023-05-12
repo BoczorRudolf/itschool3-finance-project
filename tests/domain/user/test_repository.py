@@ -7,6 +7,7 @@ from domain.user.repo import UserRepo
 from persistence.asset_file import AssetFilePersistence
 from persistence.user_file import UserPersistenceFile
 
+
 class UserRepoTestCase(unittest.TestCase):
     # asset_persistence = None
     # persistence = None
@@ -49,7 +50,6 @@ class UserRepoTestCase(unittest.TestCase):
         users_list = [u.id for u in self.repo.get_all()]
         self.assertNotIn(str(new_user.id), users_list)
 
-
     def test_it_edits_a_user(self):
         # Arrange
         old_username = "given-username3"
@@ -82,8 +82,6 @@ class UserRepoTestCase(unittest.TestCase):
     @classmethod
     def tearDownClass(cls) -> None:
         os.remove("test_users.json")
-
-
 
 
 if __name__ == "__main__":

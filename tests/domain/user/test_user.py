@@ -30,7 +30,13 @@ class UserMyTasteCase(unittest.TestCase):
         username = "random-name"
 
         actual_asset = [
-            Asset(country="United States", ticker="tsla", nr=0, name="Tesla", sector="Tech")
+            Asset(
+                country="United States",
+                ticker="tsla",
+                nr=0,
+                name="Tesla",
+                sector="Tech",
+            )
         ]
 
         user = User(id_, username, actual_asset)
@@ -46,7 +52,6 @@ class UserMyTasteCase(unittest.TestCase):
         actual_id_user1 = user1.id
 
         self.assertEqual(actual_id_user1, id_)
-
 
 
 if __name__ == "__main__":

@@ -18,7 +18,9 @@ class InvalidUID(Exception):
 
 @singleton
 class UserRepo:
-    def __init__(self, persistence: UserPersistenceInterface, asset: AssetPersistenceInterface):
+    def __init__(
+        self, persistence: UserPersistenceInterface, asset: AssetPersistenceInterface
+    ):
         print("Init user repo")
         self.__persistence = persistence
         self.__users = None
@@ -75,9 +77,6 @@ class UserRepo:
                 user.username = username
         logging.info("UserRepo update command was successfully executed")
 
-
-
     def __check_we_have_users(self):
         if self.__users is None:
             self.__users = self.__persistence.get_all()
-

@@ -5,7 +5,6 @@ from domain.user.user import User
 
 
 class UserPersistenceInterface(abc.ABC):
-
     @abc.abstractmethod
     def add(self, user: User):
         pass
@@ -25,11 +24,3 @@ class UserPersistenceInterface(abc.ABC):
     @abc.abstractmethod
     def delete_by_id(self, uid: str):
         pass
-
-
-
-
-
-
-
-

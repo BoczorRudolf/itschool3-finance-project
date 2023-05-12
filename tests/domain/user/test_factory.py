@@ -4,7 +4,6 @@ from domain.user.user import User
 
 
 class UserFactoryTestCase(unittest.TestCase):
-
     def setUp(self):
         self.factory = UserFactory()
 
@@ -18,13 +17,18 @@ class UserFactoryTestCase(unittest.TestCase):
         username = "below"
         with self.assertRaises(InvalidUsername) as context:
             self.factory.make_new(username)
-        self.assertEqual("Username should have at least 6 chars", str(context.exception))
+        self.assertEqual(
+            "Username should have at least 6 chars", str(context.exception)
+        )
 
     def test_it_raises_exception_if_the_username_is_above_20_chars(self):
         username = "u" * 21
         with self.assertRaises(InvalidUsername) as context:
             self.factory.make_new(username)
-        self.assertEqual("Username should have a maximum of 20 chars!", str(context.exception).strip())
+        self.assertEqual(
+            "Username should have a maximum of 20 chars!",
+            str(context.exception).strip(),
+        )
 
     def test_it_creates_a_user_if_the_username_has_valid_chars(self):
         username = "fire1-23"

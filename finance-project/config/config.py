@@ -5,7 +5,6 @@ from persistence.user_file import UserPersistenceFile
 from persistence.user_sqlite import UserPersistenceSqlite
 
 
-
 def persistence_type_by_choosing(file_path):
     with open(file_path, "r") as f:
         json_config_info = f.read()

@@ -7,7 +7,6 @@ from domain.user.factory import UserFactory
 
 
 class UserPersistenceSqlite(UserPersistenceInterface):
-
     def get_all(self) -> list[User]:
         with sqlite3.connect("main_users.db") as conn:
             cursor = conn.cursor()
@@ -28,15 +27,20 @@ class UserPersistenceSqlite(UserPersistenceInterface):
         with sqlite3.connect("main_users.db") as conn:
             cursor = conn.cursor()
             try:
-                cursor.execute(f"INSERT INTO users (id, username) VALUES ('{user.id}', '{user.username}')")
+                cursor.execute(
+                    f"INSERT INTO users (id, username) VALUES ('{user.id}', '{user.username}')"
+                )
             except sqlite3.OperationalError as e:
                 if "no such table" in str(e):
-                    cursor.execute("CREATE TABLE users (id TEXT PRIMARY KEY, username TEXT NOT NULL)")
+                    cursor.execute(
+                        "CREATE TABLE users (id TEXT PRIMARY KEY, username TEXT NOT NULL)"
+                    )
                 else:
                     raise e
-                cursor.execute(f"INSERT INTO users (id, username) VALUES ('{user.id}', '{user.username}')")
+                cursor.execute(
+                    f"INSERT INTO users (id, username) VALUES ('{user.id}', '{user.username}')"
+                )
             conn.commit()
-
 
     def delete_by_id(self, uid: str):
         try:
@@ -70,7 +74,9 @@ class UserPersistenceSqlite(UserPersistenceInterface):
         try:
             with sqlite3.connect("main_users.db") as conn:
                 cursor = conn.cursor()
-                cursor.execute(f"UPDATE users SET username='{new_username}' WHERE id='{user_id}'")
+                cursor.execute(
+                    f"UPDATE users SET username='{new_username}' WHERE id='{user_id}'"
+                )
                 conn.commit()
         except sqlite3.OperationalError as e:
             logging.error("Failed to edit user in database: %s", str(e))

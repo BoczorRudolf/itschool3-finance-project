@@ -25,11 +25,23 @@ class AssetFilePersistence(AssetPersistenceInterface):
     def add(self, new_user: User, asset: Asset):
         current_assets = self.get_all(new_user)
         current_assets.append(asset)
-        assets_info = [(x.ticker, x.units, x.name,
-                        x.country, x.current_price, x.currency,
-                        x.closed_price, x.fifty_day_price,
-                        x.today_low_price, x.today_high_price,
-                        x.open_price, x.percentage_diff) for x in current_assets]
+        assets_info = [
+            (
+                x.ticker,
+                x.units,
+                x.name,
+                x.country,
+                x.current_price,
+                x.currency,
+                x.closed_price,
+                x.fifty_day_price,
+                x.today_low_price,
+                x.today_high_price,
+                x.open_price,
+                x.percentage_diff,
+            )
+            for x in current_assets
+        ]
         assets_json = json.dumps(assets_info)
         with open(self.file_path, "w") as f:
             f.write(assets_json)
